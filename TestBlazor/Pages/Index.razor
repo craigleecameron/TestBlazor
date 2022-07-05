@@ -1,0 +1,88 @@
+﻿@page "/"
+@using UserInputValidationWithRegex.Models
+@using TestBlazor.Models.Response
+@using TestBlazor.Services
+@inject UrlSearchService UrlService
+<h3>URLInfo</h3>
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3 col-6">
+        <label for="SearchUrl" class="form-label">Search Url</label>
+        <InputText id="SearchUrl" class="form-control" @bind-Value="model.SearchUrl" aria-describedby="nameHelp" />
+    </div>
+    <button class="btn btn-primary">Get Info!</button>
+</EditForm>
+<br />
+<div class="mb-3 col-6">
+    <p>Image count: @urlSearchResponse.Images.Count()</p>
+    <p>Unique Word Count: @urlSearchResponse.WordCount.Count() </p>
+    <p>Word Count: @urlSearchResponse.WordCount.Values.Sum() </p>
+    <p class="validation-message">@urlSearchResponse.ErrorMessage</p>
+</div>
+<div class="mb-3 col-6">
+    <table class="table">
+        <tbody>
+            @foreach (var dictionaryItem in urlSearchResponse.WordCount.Take(10).OrderByDescending(x => x.Value))
+            {
+                <tr>
+                    <td>@dictionaryItem.Key</td>
+                    <td>@dictionaryItem.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@code {
+    private UrlResponseModel urlSearchResponse = new UrlResponseModel();
+    private SearchUrlModel model = new SearchUrlModel();
+
+    private void HandleValidSubmit()
+    {
+        urlSearchResponse = UrlService.GetUrlSearch(model.SearchUrl);
+    }
+}
+
+<table class="table">
+    <tbody>
+        @foreach (var img in urlSearchResponse.Images.Take(urlSearchResponse.ShowImages))
+        {
+            
+            <tr>
+                <td><img src="@img" /></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@inject IScrollInfoService scrollInfoService
+@implements IDisposable
+
+@code {
+
+    private int counter;
+
+    private void OnScroll()
+    {
+        counter++;
+    }
+
+    protected override void OnInitialized()
+    {
+        scrollInfoService.OnScroll += OnScroll;
+    }
+
+    private void OnScroll(object sender, int yValue)
+    {
+        if (yValue == 0)
+        {
+            urlSearchResponse.ShowImages = urlSearchResponse.ShowImages +3;
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        scrollInfoService.OnScroll -= OnScroll;
+    }
+}

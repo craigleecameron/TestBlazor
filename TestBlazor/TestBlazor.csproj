@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="wwwroot\Feature\UrlSearch\Models\Request\UrlSearchModel.cs" />
+    <Compile Include="wwwroot\Feature\UrlSearch\Models\Response\UrlResponseModel.cs" />
+    <Compile Include="wwwroot\Feature\UrlSearch\Services\ScrollInfoService.cs" />
+    <Compile Include="wwwroot\Feature\UrlSearch\Services\UrlSearchService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack.NetCore" Version="1.5.0.1" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>
